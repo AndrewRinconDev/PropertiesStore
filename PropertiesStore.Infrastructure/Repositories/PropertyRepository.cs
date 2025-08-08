@@ -14,7 +14,7 @@ namespace PropertiesStore.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<(IEnumerable<Property>, int)> GetPropertiesAsync(int page, int pageSize)
+        public async Task<(List<Property>, int)> GetPropertiesAsync(int page, int pageSize)
         {
             var count = await _context.GetCollection<Property>("Properties").CountDocumentsAsync(_ => true);
             var properties = await _context.GetCollection<Property>("Properties")
@@ -26,7 +26,7 @@ namespace PropertiesStore.Infrastructure.Repositories
             return (properties, (int)count);
         }
 
-        public async Task<(IEnumerable<Property>, int)> GetFilteredPropertiesAsync(
+        public async Task<(List<Property>, int)> GetFilteredPropertiesAsync(
             string name,
             string address,
             decimal? minPrice,

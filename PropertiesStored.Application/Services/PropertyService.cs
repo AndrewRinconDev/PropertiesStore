@@ -10,12 +10,16 @@ namespace PropertiesStored.Application.Services
     {
         private readonly IPropertyRepository _propertyRepository;
         private readonly IOwnerRepository _ownerRepository;
+        private readonly IPropertyImageRepository _propertyImageRepository;
+        private readonly IPropertyTraceRepository _propertyTraceRepository;
         private readonly IMapper _mapper;
 
-        public PropertyService(IPropertyRepository propertyRepository, IOwnerRepository ownerRepository, IMapper mapper)
+        public PropertyService(IPropertyRepository propertyRepository, IOwnerRepository ownerRepository, IPropertyImageRepository propertyImageRepository, IPropertyTraceRepository propertyTraceRepository, IMapper mapper)
         {
             _propertyRepository = propertyRepository;
             _ownerRepository = ownerRepository;
+            _propertyImageRepository = propertyImageRepository;
+            _propertyTraceRepository = propertyTraceRepository;
             _mapper = mapper;
         }
 
@@ -66,41 +70,43 @@ namespace PropertiesStored.Application.Services
             var property = await _propertyRepository.GetPropertyByIdAsync(id);
             if (property == null) return null;
 
-            var dto = _mapper.Map<PropertyDto>(property);
-
-            if (!string.IsNullOrEmpty(property.IdOwner))
-            {
-                var owner = await _ownerRepository.GetOwnerByOwnerIdAsync(property.IdOwner);
-                if (owner != null)
-                {
-                    dto.OwnerName = owner.Name;
-                }
-            }
-
-            return dto;
+            return await MapPropertyToDto(property);
         }
-
+        
         private async Task<IEnumerable<PropertyDto>> MapPropertiesToDtos(IEnumerable<Property> properties)
         {
             var dtos = new List<PropertyDto>();
 
             foreach (var property in properties)
             {
-                var dto = _mapper.Map<PropertyDto>(property);
-
-                if (!string.IsNullOrEmpty(property.IdOwner))
-                {
-                    var owner = await _ownerRepository.GetOwnerByOwnerIdAsync(property.IdOwner);
-                    if (owner != null)
-                    {
-                        dto.OwnerName = owner.Name;
-                    }
-                }
+                var dto = await MapPropertyToDto(property);
 
                 dtos.Add(dto);
             }
 
             return dtos;
+        }
+
+        private async Task<PropertyDto> MapPropertyToDto(Property property)
+        {
+            var dto = _mapper.Map<PropertyDto>(property);
+
+            if (!string.IsNullOrEmpty(property.IdOwner))
+            {
+                var owner = await _ownerRepository.GetOwnerByIdOwnerAsync(property.IdOwner);
+                if (owner != null)
+                {
+                    dto.Owner = _mapper.Map<OwnerDto>(owner);
+                }
+            }
+
+            var images = await _propertyImageRepository.GetImagesByPropertyIdAsync(property.Id);
+            dto.Images = _mapper.Map<List<PropertyImageDto>>(images);
+
+            var traces = await _propertyTraceRepository.GetTracesByPropertyIdAsync(property.Id);
+            dto.Traces = _mapper.Map<List<PropertyTraceDto>>(traces);
+
+            return dto;
         }
     }
 }
