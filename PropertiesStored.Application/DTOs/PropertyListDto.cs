@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PropertiesStored.Application.DTOs
+﻿namespace PropertiesStored.Application.DTOs
 {
     public class PropertyListDto
     {
