@@ -10,7 +10,7 @@ namespace PropertiesStore.Core.Entities
         [BsonElement("idProperty")]
         public string IdProperty { get; set; }
 
-        public string FilePath { get; set; }
+        public string File { get; set; }
         public bool Enabled { get; set; }
     }
 }

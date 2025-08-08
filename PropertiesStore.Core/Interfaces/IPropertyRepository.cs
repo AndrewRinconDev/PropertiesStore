@@ -4,8 +4,8 @@ namespace PropertiesStore.Core.Interfaces
 {
     public interface IPropertyRepository
     {
-        Task<(IEnumerable<Property>, int)> GetPropertiesAsync(int page, int pageSize);
-        Task<(IEnumerable<Property>, int)> GetFilteredPropertiesAsync(
+        Task<(List<Property>, int)> GetPropertiesAsync(int page, int pageSize);
+        Task<(List<Property>, int)> GetFilteredPropertiesAsync(
             string name,
             string address,
             decimal? minPrice,

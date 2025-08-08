@@ -13,7 +13,9 @@ namespace PropertiesStore.Infrastructure.ServiceExtensions
         {
             return services
                 .AddScoped<IPropertyRepository, PropertyRepository>()
-                .AddScoped<IOwnerRepository, OwnerRepository>();
+                .AddScoped<IOwnerRepository, OwnerRepository>()
+                .AddScoped<IPropertyImageRepository, PropertyImageRepository>()
+                .AddScoped<IPropertyTraceRepository, PropertyTraceRepository>();
         }
     }
 }

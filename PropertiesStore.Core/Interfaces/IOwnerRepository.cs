@@ -4,6 +4,6 @@ namespace PropertiesStore.Core.Interfaces
 {
     public interface IOwnerRepository
     {
-        Task<Owner> GetOwnerByOwnerIdAsync(string ownerId);
+        Task<Owner> GetOwnerByIdOwnerAsync(string idOwner);
     }
 }

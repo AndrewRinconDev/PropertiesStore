@@ -9,8 +9,12 @@ namespace PropertiesStored.Application.Mappings
         public AutoMapperProfile()
         {
             CreateMap<Property, PropertyDto>()
-                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Image.FilePath))
-                .ForMember(dest => dest.OwnerName, opt => opt.Ignore()); // Will be populated in service
+                .ForMember(dest => dest.Owner, opt => opt.Ignore())
+                .ForMember(dest => dest.Images, opt => opt.Ignore())
+                .ForMember(dest => dest.Traces, opt => opt.Ignore());
+            CreateMap<PropertyImage, PropertyImageDto>();
+            CreateMap<PropertyTrace, PropertyTraceDto>();
+            CreateMap<Owner, OwnerDto>();
         }
     }
 }

@@ -14,9 +14,9 @@ namespace PropertiesStore.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Owner> GetOwnerByOwnerIdAsync(string ownerId)
+        public async Task<Owner> GetOwnerByIdOwnerAsync(string idOwner)
         {
-            return await _context.GetCollection<Owner>("Owners").Find(o => o.IdOwner == ownerId).FirstOrDefaultAsync();
+            return await _context.GetCollection<Owner>("Owners").Find(o => o.IdOwner == idOwner).FirstOrDefaultAsync();
         }
     }
 }
