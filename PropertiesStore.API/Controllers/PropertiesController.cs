@@ -16,6 +16,15 @@ namespace PropertiesStore.API.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetProperties(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            var result = await _propertyService.GetPropertiesWithDetailsAsync(page, pageSize);
+            return Ok(result);
+        }
+
+        [HttpGet("filtered")]
+        public async Task<IActionResult> GetFilteredProperties(
             [FromQuery] string name,
             [FromQuery] string address,
             [FromQuery] decimal? minPrice,
@@ -23,7 +32,7 @@ namespace PropertiesStore.API.Controllers
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
         {
-            var result = await _propertyService.GetFilteredPropertiesAsync(
+            var result = await _propertyService.GetFilteredPropertiesWithDetailsAsync(
                 name, address, minPrice, maxPrice, page, pageSize);
             return Ok(result);
         }
@@ -31,12 +40,8 @@ namespace PropertiesStore.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPropertyById(string id)
         {
-            var property = await _propertyService.GetPropertyByIdAsync(id);
-            if (property == null)
-            {
-                return NotFound();
-            }
-            return Ok(property);
+            var property = await _propertyService.GetPropertyWithDetailsByIdAsync(id);
+            return property != null ? Ok(property) : NotFound();
         }
     }
 }

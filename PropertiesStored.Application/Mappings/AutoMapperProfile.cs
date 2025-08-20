@@ -12,9 +12,12 @@ namespace PropertiesStored.Application.Mappings
                 .ForMember(dest => dest.Owner, opt => opt.Ignore())
                 .ForMember(dest => dest.Images, opt => opt.Ignore())
                 .ForMember(dest => dest.Traces, opt => opt.Ignore());
+
             CreateMap<PropertyImage, PropertyImageDto>();
             CreateMap<PropertyTrace, PropertyTraceDto>();
             CreateMap<Owner, OwnerDto>();
+            
+            CreateMap<PropertyWithDetails, PropertyWithDetailsDto>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using PropertiesStore.Core.Entities;
 using PropertiesStore.Core.Interfaces;
@@ -7,87 +8,158 @@ namespace PropertiesStore.Infrastructure.Repositories
 {
     public class PropertyRepository : IPropertyRepository
     {
-
         private readonly IMongoDbContext _context;
 
         public PropertyRepository(IMongoDbContext context)
         {
             _context = context;
         }
-        public async Task<(List<Property>, int)> GetPropertiesAsync(int page, int pageSize)
-        {
-            var count = await _context.GetCollection<Property>("Properties").CountDocumentsAsync(_ => true);
-            var properties = await _context.GetCollection<Property>("Properties")
-                .Find(_ => true)
-                .Skip((page - 1) * pageSize)
-                .Limit(pageSize)
-                .ToListAsync();
 
-            return (properties, (int)count);
+        public async Task<(List<PropertyWithDetails>, int)> GetPropertiesWithDetailsAsync(int page, int pageSize)
+        {
+            var pipeline = BuildBasePipeline(page, pageSize);
+            return await ExecuteAggregationPipeline(pipeline);
         }
 
-        public async Task<(List<Property>, int)> GetFilteredPropertiesAsync(
-            string name,
-            string address,
-            decimal? minPrice,
-            decimal? maxPrice,
-            int page,
-            int pageSize)
+        public async Task<(List<PropertyWithDetails>, int)> GetFilteredPropertiesWithDetailsAsync(
+            string name, string address, decimal? minPrice, decimal? maxPrice, int page, int pageSize)
         {
-            var filter = Builders<Property>.Filter.Empty;
+            var pipeline = BuildFilteredPipeline(name, address, minPrice, maxPrice, page, pageSize);
+            return await ExecuteAggregationPipeline(pipeline);
+        }
+
+        public async Task<PropertyWithDetails> GetPropertyWithDetailsByIdAsync(string id)
+        {
+            var pipeline = BuildSinglePropertyPipeline(id);
+            var result = await _context.GetCollection<Property>("Properties")
+                .AggregateAsync<PropertyWithDetails>(pipeline);
+            return await result.FirstOrDefaultAsync();
+        }
+
+        #region Private Methods
+        private static BsonDocument[] BuildBasePipeline(int page, int pageSize)
+        {
+            return
+            [
+                BuildLookupStage("Owners", "IdOwner", "IdOwner", "Owner"),
+                BuildLookupStage("PropertyImages", "IdProperty", "IdProperty", "Images"),
+                BuildLookupStage("PropertyTraces", "IdProperty", "IdProperty", "Traces"),
+                BuildAddFieldsStage(),
+                BuildFacetStage(page, pageSize)
+            ];
+        }
+
+        private static BsonDocument[] BuildFilteredPipeline(
+            string name, string address, decimal? minPrice, decimal? maxPrice, int page, int pageSize)
+        {
+            var pipeline = new List<BsonDocument>();
+
+            var matchFilter = BuildMatchFilter(name, address, minPrice, maxPrice);
+            if (matchFilter.ElementCount > 0)
+            {
+                pipeline.Add(new BsonDocument("$match", matchFilter));
+            }
+
+            pipeline.AddRange(BuildBasePipeline(page, pageSize));
+            return pipeline.ToArray();
+        }
+
+        private static BsonDocument[] BuildSinglePropertyPipeline(string id)
+        {
+            return
+            [
+                new BsonDocument("$match", new BsonDocument("_id", new ObjectId(id))),
+                BuildLookupStage("Owners", "IdOwner", "IdOwner", "Owner"),
+                BuildLookupStage("PropertyImages", "IdProperty", "IdProperty", "Images"),
+                BuildLookupStage("PropertyTraces", "IdProperty", "IdProperty", "Traces"),
+                BuildAddFieldsStage()
+            ];
+        }
+
+        private static BsonDocument BuildLookupStage(string from, string localField, string foreignField, string asField)
+        {
+            return new BsonDocument("$lookup", new BsonDocument
+            {
+                { "from", from },
+                { "localField", localField },
+                { "foreignField", foreignField },
+                { "as", asField }
+            });
+        }
+
+        private static BsonDocument BuildAddFieldsStage()
+        {
+            return new BsonDocument("$addFields", new BsonDocument
+            {
+                { "Owner", new BsonDocument("$arrayElemAt", new BsonArray { "$Owner", 0 }) },
+                { "Images", new BsonDocument("$filter", new BsonDocument
+                    {
+                        { "input", "$Images" },
+                        { "cond", new BsonDocument("$eq", new BsonArray { "$$this.Enabled", true }) }
+                    })
+                }
+            });
+        }
+
+        private static BsonDocument BuildFacetStage(int page, int pageSize)
+        {
+            return new BsonDocument("$facet", new BsonDocument
+            {
+                { "data", new BsonArray
+                    {
+                        new BsonDocument("$skip", (page - 1) * pageSize),
+                        new BsonDocument("$limit", pageSize)
+                    }
+                },
+                { "totalCount", new BsonArray
+                    {
+                        new BsonDocument("$count", "count")
+                    }
+                }
+            });
+        }
+
+        private static BsonDocument BuildMatchFilter(string name, string address, decimal? minPrice, decimal? maxPrice)
+        {
+            var filter = new BsonDocument();
 
             if (!string.IsNullOrEmpty(name))
             {
-                filter = Builders<Property>.Filter.And(filter,
-                    Builders<Property>.Filter.Regex(x => x.Name, new BsonRegularExpression(name, "i")));
+                filter.Add("Name", new BsonRegularExpression(name, "i"));
             }
 
             if (!string.IsNullOrEmpty(address))
             {
-                filter = Builders<Property>.Filter.And(filter,
-                    Builders<Property>.Filter.Regex(x => x.Address, new BsonRegularExpression(address, "i")));
+                filter.Add("Address", new BsonRegularExpression(address, "i"));
             }
 
-            if (minPrice.HasValue)
+            if (minPrice.HasValue || maxPrice.HasValue)
             {
-                filter = Builders<Property>.Filter.And(filter,
-                    Builders<Property>.Filter.Gte(x => x.Price, minPrice.Value));
+                var priceFilter = new BsonDocument();
+                if (minPrice.HasValue)
+                    priceFilter.Add("$gte", minPrice.Value);
+                if (maxPrice.HasValue)
+                    priceFilter.Add("$lte", maxPrice.Value);
+                filter.Add("Price", priceFilter);
             }
 
-            if (maxPrice.HasValue)
-            {
-                filter = Builders<Property>.Filter.And(filter,
-                    Builders<Property>.Filter.Lte(x => x.Price, maxPrice.Value));
-            }
-
-            var count = await _context.GetCollection<Property>("Properties").CountDocumentsAsync(filter);
-            var properties = await _context.GetCollection<Property>("Properties")
-                .Find(filter)
-                .Skip((page - 1) * pageSize)
-                .Limit(pageSize)
-                .ToListAsync();
-
-            return (properties, (int)count);
+            return filter;
         }
 
-        public async Task<Property> GetPropertyByIdAsync(string id)
+        private async Task<(List<PropertyWithDetails>, int)> ExecuteAggregationPipeline(BsonDocument[] pipeline)
         {
-            return await _context.GetCollection<Property>("Properties").Find(p => p.Id == id).FirstOrDefaultAsync();
+            var result = await _context.GetCollection<Property>("Properties")
+                .AggregateAsync<BsonDocument>(pipeline);
+            var resultList = await result.ToListAsync();
+
+            var data = resultList.FirstOrDefault()?.GetValue("data").AsBsonArray ?? new BsonArray();
+            var totalCount = resultList.FirstOrDefault()?.GetValue("totalCount").AsBsonArray?.FirstOrDefault()?.AsBsonDocument?.GetValue("count").AsInt32 ?? 0;
+
+            var properties = data.Select(doc => BsonSerializer.Deserialize<PropertyWithDetails>(doc.AsBsonDocument)).ToList();
+
+            return (properties, totalCount);
         }
 
-        public async Task AddPropertyAsync(Property property)
-        {
-            await _context.GetCollection<Property>("Properties").InsertOneAsync(property);
-        }
-
-        public async Task UpdatePropertyAsync(Property property)
-        {
-            await _context.GetCollection<Property>("Properties").ReplaceOneAsync(p => p.Id == property.Id, property);
-        }
-
-        public async Task DeletePropertyAsync(string id)
-        {
-            await _context.GetCollection<Property>("Properties").DeleteOneAsync(p => p.Id == id);
-        }    
+        #endregion
     }
 }
