@@ -5,31 +5,35 @@ import { getAllProperties, getPropertyById, createProperty } from './property.se
 describe('Property Service', () => {
   describe('getAllProperties', () => {
     it('should return a list of properties', async () => {
-      const mockFetchResponse = [
-        { name: 'Property 1', address: 'Address 1' },
-        { name: 'Property 2', address: 'Address 2' },
-      ];
+      const mockFetchResponse = {
+        properties: [
+          { name: 'Property 1', address: 'Address 1' },
+          { name: 'Property 2', address: 'Address 2' },
+        ]
+      };
       window.fetch = mockFetch(mockFetchResponse);
       
-      const properties = await getAllProperties();
-      expect(properties).toBeInstanceOf(Array);
-      expect(properties).toHaveLength(2);
-      expect(properties[0]).toHaveProperty('name', 'Property 1');
+      const propertiesResponse = await getAllProperties();
+      expect(propertiesResponse.properties).toBeInstanceOf(Array);
+      expect(propertiesResponse.properties).toHaveLength(2);
+      expect(propertiesResponse.properties[0]).toHaveProperty('name', 'Property 1');
     });
     
     it('should fetch endpoint with filter params', async () => {
-      const mockFetchResponse = [
-        { name: 'Property 1', address: 'Address 1' },
-        { name: 'Property 2', address: 'Address 2' },
-      ];
+      const mockFetchResponse = {
+        properties: [
+          { name: 'Property 1', address: 'Address 1' },
+          { name: 'Property 2', address: 'Address 2' },
+        ]
+      };
       window.fetch = mockFetch(mockFetchResponse);
       const fetchSpy = jest.spyOn(global, 'fetch');
       const filters = { name: 'Property 1' };
 
-      const properties = await getAllProperties(filters);
+      const propertiesResponse = await getAllProperties(filters);
 
-      expect(properties).toBeInstanceOf(Array);
-      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('Property?name=Property+1'));
+      expect(propertiesResponse.properties).toBeInstanceOf(Array);
+      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('Properties/filtered?name=Property+1'));
     });
 
     it('should throw an error when fetch fails', async () => {

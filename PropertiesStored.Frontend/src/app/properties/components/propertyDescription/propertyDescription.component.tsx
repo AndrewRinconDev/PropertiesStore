@@ -14,7 +14,7 @@ function PropertyDescription({ propertyData }: IPropertyDescriptionProps) {
       <h1 className="property-title">{propertyData.name}</h1>
       <p>{propertyData.address}</p>
       <p>
-        {propertyData.codeInternational} - {propertyData.year}
+        {propertyData.codeInternal} - {propertyData.year}
       </p>
       <p className="text-blue-800 font-bold !text-2xl">
         ${propertyData.price.toLocaleString()}

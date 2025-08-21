@@ -41,8 +41,8 @@ namespace PropertiesStored.Application.Services
         }
 
         public async Task<PropertyListDto> GetFilteredPropertiesAsync(
-            string name,
-            string address,
+            string? name,
+            string? address,
             decimal? minPrice,
             decimal? maxPrice,
             int page,

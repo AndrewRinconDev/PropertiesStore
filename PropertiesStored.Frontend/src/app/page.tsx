@@ -9,7 +9,7 @@ import PropertyCard from "./properties/components/propertyCard/propertyCard.comp
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState<propertyModel[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState({
     name: "",
     address: "",
@@ -19,8 +19,9 @@ export default function PropertiesPage() {
 
   const getFilteredProperties = async () => {
     setLoading(true);
-    const currentProperties = await getAllProperties(filter);
-    setProperties(currentProperties);
+    const propertiesResponse = await getAllProperties(filter);
+    console.log({propertiesResponse}); 
+    setProperties(propertiesResponse.properties);
     setLoading(false);
   };
 
@@ -28,7 +29,7 @@ export default function PropertiesPage() {
     getFilteredProperties();
   }, []);
 
-  if (!properties.length || loading) {
+  if (!properties || loading) {
     return <LoadingOverlay />;
   }
 
@@ -37,7 +38,7 @@ export default function PropertiesPage() {
       <PropertyFilters filter={filter} setFilter={setFilter} getFilteredProperties={getFilteredProperties} />
       <div className="flex-1 p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
         {properties.map((property) => (
-          <PropertyCard key={property.idProperty} property={property} />
+          <PropertyCard key={property.id} property={property} />
         ))}
       </div>
     </div>

@@ -8,17 +8,17 @@ describe('getImageData Component', () => {
       {
         idPropertyImage: '1',
         file: 'image1.jpg',
-        enable: true
+        enabled: true
       },
       {
         idPropertyImage: '2',
         file: 'image2.jpg',
-        enable: true
+        enabled: true
       },
       {
         idPropertyImage: '3',
         file: 'image3.jpg',
-        enable: true
+        enabled: true
       }
     ];
     
@@ -35,17 +35,17 @@ describe('getImageData Component', () => {
       {
         idPropertyImage: '1',
         file: 'image1.jpg',
-        enable: true
+        enabled: true
       },
       {
         idPropertyImage: '2',
         file: 'image2.jpg',
-        enable: true
+        enabled: true
       },
       {
         idPropertyImage: '3',
         file: 'image3.jpg',
-        enable: false
+        enabled: false
       }
     ];
     

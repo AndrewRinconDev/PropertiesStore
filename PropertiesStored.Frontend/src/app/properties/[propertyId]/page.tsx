@@ -33,7 +33,7 @@ function PropertyDetailPage() {
     <section className="property-detail-page-section">
       <div className="property-images-container">
         <ImagesGallery
-          imagesSrc={getImageData(propertyData.propertyImages)}
+          imagesSrc={getImageData(propertyData.images)}
           alt={propertyData.name}
         />
       </div>

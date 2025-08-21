@@ -1,12 +1,12 @@
 import { API_BASE_URL } from "../../core/constants/global";
 
-import propertyModel from "../models/property.model";
+import propertyModel, { propertyResponseModel } from "../models/property.model";
 
-const apiUrl = `${API_BASE_URL}/Property`;
+const apiUrl = `${API_BASE_URL}/Properties`;
 
-export const getAllProperties = async (filters?: Record<string, string>): Promise<propertyModel[]> => {
+export const getAllProperties = async (filters?: Record<string, string>): Promise<propertyResponseModel> => {
   const query = new URLSearchParams(filters).toString();
-  const response = await fetch(`${apiUrl}?${query}`);
+  const response = await fetch(`${apiUrl}/filtered?${query}`);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }

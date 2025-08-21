@@ -27,8 +27,8 @@ namespace PropertiesStore.Infrastructure.Repositories
         }
 
         public async Task<(List<Property>, int)> GetFilteredPropertiesAsync(
-            string name,
-            string address,
+            string? name,
+            string? address,
             decimal? minPrice,
             decimal? maxPrice,
             int page,
