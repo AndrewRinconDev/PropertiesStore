@@ -1,0 +1,88 @@
+.property-description-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 10px;
+  padding: 70px 0;
+}
+
+.property-title {
+  font-size: 1.7rem;
+  font-weight: bold;
+}
+
+.back-button-container {
+  display: flex;
+  justify-content: flex-start;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: fit-content;
+}
+
+.back-button-container a {
+  padding: 5px 10px;
+  background-color: white;
+  color: #00a6ed;
+  border: 1px solid #00a6ed;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.back-button-container a:hover {
+  background-color: #00a6ed;
+  color: white;
+}
+
+p {
+  font-size: 1.2rem;
+}
+
+.owner-description-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 70px;
+}
+
+.owner-description-container h2 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  width: 100%;
+}
+
+.owner-info-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.owner-description-container .owner-image-container {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+@media screen and (min-width: 768px) {
+  .property-description-container {
+    gap: 15px;
+    padding: 20px 0;
+  }
+
+  .property-title {
+    font-size: 2.5rem;
+  }
+
+  .owner-description-container h2 {
+    font-size: 1.8rem;
+  }
+
+  .owner-description-container .owner-image-container {
+    width: 80px;
+    height: 80px;
+  }
+}

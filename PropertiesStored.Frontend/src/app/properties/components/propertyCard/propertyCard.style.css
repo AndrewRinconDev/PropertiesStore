@@ -1,0 +1,44 @@
+.property-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 350px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* .property-card:hover {
+  transform: rotate(1deg);
+} */
+
+.property-image {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  position: relative;
+  /* object-position: center bottom; */
+}
+
+.property-info {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.property-button {
+  width: 100%;
+  text-align: center;
+  padding: 5px 10px;
+  background-color: var(--primaryColor);
+  color: white;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.property-button:hover {
+  opacity: 0.8;
+}

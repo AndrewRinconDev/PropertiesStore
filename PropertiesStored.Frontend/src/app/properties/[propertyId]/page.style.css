@@ -1,0 +1,45 @@
+.property-detail-page-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.property-images-container {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+}
+
+.property-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .property-detail-page-section {
+    justify-content: center;
+    gap: 30px;
+    flex-direction: row;
+  }
+
+  .property-images-container {
+    width: 60%;
+    max-width: 840px;
+  }
+
+  .property-info-container {
+    width: 40%;
+    max-width: 560px;
+  }
+}
+
+
+@media screen and (min-width: 1024px) {
+  .property-detail-page-section {
+    gap: 40px;
+    padding: 30px 20px;
+  }
+}
