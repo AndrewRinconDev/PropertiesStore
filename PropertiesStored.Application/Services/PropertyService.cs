@@ -65,14 +65,37 @@ namespace PropertiesStored.Application.Services
             };
         }
 
-        public async Task<PropertyDto> GetPropertyByIdAsync(string id)
+        public async Task<PropertyDto?> GetPropertyByIdAsync(string id)
         {
             var property = await _propertyRepository.GetPropertyByIdAsync(id);
             if (property == null) return null;
 
             return await MapPropertyToDto(property);
         }
-        
+
+        public async Task<PropertyWithDetailsListDto> GetPropertiesWithDetailsAsync(int page, int pageSize)
+        {
+            var (properties, totalCount) = await _propertyRepository.GetPropertiesWithDetailsAsync(page, pageSize);
+            return CreatePropertyWithDetailsListDto(properties, page, pageSize, totalCount);
+        }
+
+        public async Task<PropertyWithDetailsListDto> GetFilteredPropertiesWithDetailsAsync(
+            string name, string address, decimal? minPrice, decimal? maxPrice, int page, int pageSize)
+        {
+            var (properties, totalCount) = await _propertyRepository.GetFilteredPropertiesWithDetailsAsync(
+                name, address, minPrice, maxPrice, page, pageSize);
+            return CreatePropertyWithDetailsListDto(properties, page, pageSize, totalCount);
+        }
+
+        public async Task<PropertyWithDetailsDto?> GetPropertyWithDetailsByIdAsync(string id)
+        {
+            var property = await _propertyRepository.GetPropertyWithDetailsByIdAsync(id);
+            return property != null ? _mapper.Map<PropertyWithDetailsDto>(property) : null;
+        }
+
+        #region Private Methods
+
+
         private async Task<IEnumerable<PropertyDto>> MapPropertiesToDtos(IEnumerable<Property> properties)
         {
             var dtos = new List<PropertyDto>();
@@ -100,13 +123,35 @@ namespace PropertiesStored.Application.Services
                 }
             }
 
-            var images = await _propertyImageRepository.GetImagesByPropertyIdAsync(property.Id);
+            var images = await _propertyImageRepository.GetImagesByPropertyIdAsync(property.IdProperty);
             dto.Images = _mapper.Map<List<PropertyImageDto>>(images);
 
-            var traces = await _propertyTraceRepository.GetTracesByPropertyIdAsync(property.Id);
+            var traces = await _propertyTraceRepository.GetTracesByPropertyIdAsync(property.IdProperty);
             dto.Traces = _mapper.Map<List<PropertyTraceDto>>(traces);
 
             return dto;
         }
+
+        private PropertyWithDetailsListDto CreatePropertyWithDetailsListDto(IEnumerable<PropertyWithDetails> properties, int page, int pageSize, int totalCount)
+        {
+            var propertyDtos = _mapper.Map<List<PropertyWithDetailsDto>>(properties);
+            return new PropertyWithDetailsListDto
+            {
+                Properties = propertyDtos,
+                Pagination = CreatePaginationDto(page, pageSize, totalCount)
+            };
+        }
+
+        private static PaginationDto CreatePaginationDto(int page, int pageSize, int totalCount)
+        {
+            return new PaginationDto
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
+        }
+
+        #endregion
     }
 }

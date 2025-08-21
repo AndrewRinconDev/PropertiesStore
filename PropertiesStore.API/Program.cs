@@ -40,7 +40,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    app.UseSwaggerUI(c => 
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Properties Store API V1");
         c.RoutePrefix = "swagger/"; // Set Swagger UI at the app's root

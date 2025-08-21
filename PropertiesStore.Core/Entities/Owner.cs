@@ -7,14 +7,14 @@ namespace PropertiesStore.Core.Entities
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [BsonElement("IdOwner")]
-        public string IdOwner { get; set; }
+        public string IdOwner { get; set; } = string.Empty;
 
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string Photo { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string Photo { get; set; } = string.Empty;
         public DateTime Birthday { get; set; }
     }
 }

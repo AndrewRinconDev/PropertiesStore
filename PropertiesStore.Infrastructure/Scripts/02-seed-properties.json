@@ -1,0 +1,56 @@
+[
+  {
+    "idProperty": "PROP001",
+    "Name": "9606 Verlaine Ct",
+    "Address": "Henderson, NV 89142",
+    "Price": 4935000,
+    "CodeInternal": "VER001",
+    "Year": 2023,
+    "IdOwner": "OWNER001"
+  },
+  {
+    "idProperty": "PROP002",
+    "Name": "1101 Paradise Penthouse",
+    "Address": "Henderson, NV 33082",
+    "Price": 9235000,
+    "CodeInternal": "PAR001",
+    "Year": 2024,
+    "IdOwner": "OWNER002"
+  },
+  {
+    "idProperty": "PROP003",
+    "Name": "1109 Paradise Villa Ct",
+    "Address": "231 McDonald Avenue",
+    "Price": 1235000,
+    "CodeInternal": "PAR002",
+    "Year": 2025,
+    "IdOwner": "OWNER003"
+  },
+  {
+    "idProperty": "PROP004",
+    "Name": "107 Nolanville park",
+    "Address": "2870 Thorn Street",
+    "Price": 3465000,
+    "CodeInternal": "NOL001",
+    "Year": 2022,
+    "IdOwner": "OWNER004"
+  },
+  {
+    "idProperty": "PROP005",
+    "Name": "854 Gridley Place",
+    "Address": "366 Irving Place",
+    "Price": 2839000,
+    "CodeInternal": "GRI001",
+    "Year": 2022,
+    "IdOwner": "OWNER005"
+  },
+  {
+    "idProperty": "PROP006",
+    "Name": "2963 Stoney Lonesome",
+    "Address": "795 Bolman Court",
+    "Price": 7347000,
+    "CodeInternal": "STO001",
+    "Year": 2025,
+    "IdOwner": "OWNER006"
+  }
+]
