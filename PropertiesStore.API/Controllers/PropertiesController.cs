@@ -15,11 +15,12 @@ namespace PropertiesStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProperties(
+        public async Task<IActionResult> GetAllProperties(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
         {
-            var result = await _propertyService.GetPropertiesWithDetailsAsync(page, pageSize);
+            var result = await _propertyService.GetAllPropertiesAsync(page, pageSize);
+
             return Ok(result);
         }
 
@@ -32,7 +33,7 @@ namespace PropertiesStore.API.Controllers
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
         {
-            var result = await _propertyService.GetFilteredPropertiesWithDetailsAsync(
+            var result = await _propertyService.GetFilteredPropertiesAsync(
                 name, address, minPrice, maxPrice, page, pageSize);
             return Ok(result);
         }
@@ -40,8 +41,19 @@ namespace PropertiesStore.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPropertyById(string id)
         {
-            var property = await _propertyService.GetPropertyWithDetailsByIdAsync(id);
-            return property != null ? Ok(property) : NotFound();
+            var property = await _propertyService.GetPropertyByIdAsync(id);
+            if (property == null) return NotFound();
+
+            return Ok(property);
+        }
+
+        [HttpGet("details")]
+        public async Task<IActionResult> GetPropertiesWithDetails(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            var result = await _propertyService.GetPropertiesWithDetailsAsync(page, pageSize);
+            return Ok(result);
         }
     }
 }

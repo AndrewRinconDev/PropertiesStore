@@ -1,0 +1,50 @@
+[
+  {
+    "idPropertyTrace": "TRACE001",
+    "idProperty": "PROP001",
+    "DateSale": "2025-01-10T22:46:05.994Z",
+    "Name": "First seller",
+    "Value": 4935000,
+    "Tax": 5181
+  },
+  {
+    "idPropertyTrace": "TRACE002",
+    "idProperty": "PROP002",
+    "DateSale": "2025-01-10T22:46:05.994Z",
+    "Name": "First seller",
+    "Value": 9235000,
+    "Tax": 5181
+  },
+  {
+    "idPropertyTrace": "TRACE003",
+    "idProperty": "PROP003",
+    "DateSale": "2025-01-10T22:46:05.994Z",
+    "Name": "First seller",
+    "Value": 1235000,
+    "Tax": 5181
+  },
+  {
+    "idPropertyTrace": "TRACE004",
+    "idProperty": "PROP004",
+    "DateSale": "2025-01-10T22:46:05.994Z",
+    "Name": "First seller",
+    "Value": 3465000,
+    "Tax": 5181
+  },
+  {
+    "idPropertyTrace": "TRACE005",
+    "idProperty": "PROP005",
+    "DateSale": "2025-01-10T22:46:05.994Z",
+    "Name": "First seller",
+    "Value": 2839000,
+    "Tax": 5181
+  },
+  {
+    "idPropertyTrace": "TRACE006",
+    "idProperty": "PROP006",
+    "DateSale": "2025-01-10T22:46:05.994Z",
+    "Name": "First seller",
+    "Value": 7347000,
+    "Tax": 5181
+  }
+]
