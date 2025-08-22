@@ -4,10 +4,12 @@ import { FILTER_CONSTANTS } from "../../../core/constants/pagination.constants";
 function PropertyFilters({
   filter,
   setFilter,
-  getFilteredProperties,
+  applyFilters,
 }: IPropertyFiltersProps) {
   const clearHandler = () => {
     setFilter(FILTER_CONSTANTS.DEFAULT_FILTER);
+    // Apply the cleared filters to refresh the results
+    setTimeout(() => applyFilters(), 0);
   };
 
   return (
@@ -67,7 +69,7 @@ function PropertyFilters({
         
         <div className="space-y-3 pt-4">
           <button
-            onClick={getFilteredProperties}
+            onClick={applyFilters}
             className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-xl border border-blue-500/20"
           >
             🔍 Search Properties
