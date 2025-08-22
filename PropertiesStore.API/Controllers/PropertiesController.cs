@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PropertiesStored.Application.Interfaces;
+using PropertiesStore.Application.Interfaces;
 
 namespace PropertiesStore.API.Controllers
 {

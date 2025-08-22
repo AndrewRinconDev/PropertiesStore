@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using PropertiesStore.Core.Entities;
-using PropertiesStored.Application.DTOs;
+using PropertiesStore.Application.DTOs;
 
-namespace PropertiesStored.Application.Mappings
+namespace PropertiesStore.Application.Mappings
 {
     public class AutoMapperProfile : Profile
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PropertiesStored.Application.Interfaces;
-using PropertiesStored.Application.Mappings;
-using PropertiesStored.Application.Services;
+using PropertiesStore.Application.Interfaces;
+using PropertiesStore.Application.Mappings;
+using PropertiesStore.Application.Services;
 
 namespace PropertiesStore.Application.ServiceExtensions
 {

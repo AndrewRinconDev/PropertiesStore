@@ -1,6 +1,6 @@
-﻿using PropertiesStored.Application.DTOs;
+﻿using PropertiesStore.Application.DTOs;
 
-namespace PropertiesStored.Application.Interfaces
+namespace PropertiesStore.Application.Interfaces
 {
     public interface IPropertyService
     {

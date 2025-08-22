@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using PropertiesStore.Core.Entities;
 using PropertiesStore.Core.Interfaces;
-using PropertiesStored.Application.DTOs;
-using PropertiesStored.Application.Interfaces;
+using PropertiesStore.Application.DTOs;
+using PropertiesStore.Application.Interfaces;
 
-namespace PropertiesStored.Application.Services
+namespace PropertiesStore.Application.Services
 {
     public class PropertyService : IPropertyService
     {

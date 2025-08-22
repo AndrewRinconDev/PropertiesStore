@@ -1,4 +1,4 @@
-﻿namespace PropertiesStored.Application.DTOs
+﻿namespace PropertiesStore.Application.DTOs
 {
     public class PaginationDto
     {
