@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
+import { PropertyFilter } from "../../../core/hooks/useProperties";
 
 interface IPropertyFiltersProps {
-  filter: Record<string, string>;
-  setFilter: Dispatch<SetStateAction<Record<string, string>>>;
+  filter: PropertyFilter;
+  setFilter: Dispatch<SetStateAction<PropertyFilter>>;
   getFilteredProperties: () => Promise<void>;
 }
 

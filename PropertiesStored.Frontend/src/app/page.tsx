@@ -1,46 +1,43 @@
 'use client'
-import { useState, useEffect } from "react";
-
 import LoadingOverlay from "./core/components/loadingOverlay/loadingOverlay.component";
-import { getAllProperties } from "./properties/services/property.service";
-import propertyModel from "./properties/models/property.model";
 import PropertyFilters from "./properties/components/propertyFilters/propertyFilters.component";
-import PropertyCard from "./properties/components/propertyCard/propertyCard.component";
+import PropertiesContainer from "./core/components/propertiesContainer/propertiesContainer.component";
+import { useProperties } from "./core/hooks/useProperties";
+import { LAYOUT_CONSTANTS } from "./core/constants/layout.constants";
 
 export default function PropertiesPage() {
-  const [properties, setProperties] = useState<propertyModel[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState({
-    name: "",
-    address: "",
-    minPrice: '',
-    maxPrice: '',
-  } as Record<string, string>);
+  const {
+    properties,
+    loading,
+    initialLoad,
+    pagination,
+    filter,
+    setFilter,
+    getFilteredProperties,
+    handlePageChange,
+    handlePageSizeChange,
+  } = useProperties();
 
-  const getFilteredProperties = async () => {
-    setLoading(true);
-    const propertiesResponse = await getAllProperties(filter);
-    console.log({propertiesResponse}); 
-    setProperties(propertiesResponse.properties);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getFilteredProperties();
-  }, []);
-
-  if (!properties || loading) {
+  // Show loading overlay only on initial load
+  if (initialLoad) {
     return <LoadingOverlay />;
   }
 
   return (
-    <div className="flex flex-col md:flex-row">
-      <PropertyFilters filter={filter} setFilter={setFilter} getFilteredProperties={getFilteredProperties} />
-      <div className="flex-1 p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
-        {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
-        ))}
-      </div>
+    <div className={LAYOUT_CONSTANTS.CONTAINER.FLEX}>
+      <PropertyFilters 
+        filter={filter} 
+        setFilter={setFilter} 
+        getFilteredProperties={() => getFilteredProperties(1)} 
+      />
+      <PropertiesContainer
+        properties={properties}
+        loading={loading}
+        pagination={pagination}
+        filter={filter}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+      />
     </div>
   );
 }
