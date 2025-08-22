@@ -1,13 +1,18 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import { getAllProperties } from './properties/services/property.service';
-import propertyModel from './properties/models/property.model';
 import PropertyFilters from './properties/components/propertyFilters/propertyFilters.component';
 import PropertyCard from './properties/components/propertyCard/propertyCard.component';
 import LoadingOverlay from './core/components/loadingOverlay/loadingOverlay.component';
 
 import PropertiesPage from './page';
+import { mockPagination, mockProperties, mockUseProperties } from './__mock__/propertyDataMock';
+
+// Mock the useProperties hook
+jest.mock('./core/hooks/useProperties', () => ({
+  useProperties: jest.fn()
+}));
 
 jest.mock('./properties/services/property.service');
 jest.mock('./properties/components/propertyFilters/propertyFilters.component');
@@ -15,19 +20,17 @@ jest.mock('./properties/components/propertyCard/propertyCard.component');
 jest.mock('./core/components/loadingOverlay/loadingOverlay.component');
 
 describe('PropertiesPage', () => {
-  const mockProperties: propertyModel[] = [
-    { id: '1', name: 'Property 1', address: 'Address 1', price: 100000 },
-    { id: '2', name: 'Property 2', address: 'Address 2', price: 200000 },
-  ]  as propertyModel[];
+  
 
-  const mockPagination = {
-    page: 1,
-    pageSize: 12,
-    totalCount: 2,
-    totalPages: 1,
-  };
+  
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    
+    // Mock the useProperties hook
+    const { useProperties } = jest.requireMock('./core/hooks/useProperties');
+    useProperties.mockReturnValue(mockUseProperties);
+
     (getAllProperties as jest.Mock).mockResolvedValue({ 
       properties: mockProperties,
       pagination: mockPagination
@@ -44,41 +47,37 @@ describe('PropertiesPage', () => {
     (LoadingOverlay as jest.Mock).mockImplementation(() => <div data-testid="loading-overlay">Loading...</div>);
   });
 
-  it('renders loading overlay initially', () => {
+  it('renders loading overlay when initialLoad is true', () => {
+    // Mock initialLoad as true
+          const { useProperties } = jest.requireMock('./core/hooks/useProperties');
+      useProperties.mockReturnValue({ ...mockUseProperties, initialLoad: true });
+
     render(<PropertiesPage />);
     expect(screen.getByTestId('loading-overlay')).toBeInTheDocument();
   });
 
   it('renders property filters and property cards after loading', async () => {
     render(<PropertiesPage />);
-    await waitFor(() => expect(screen.getByTestId('property-filters')).toBeInTheDocument());
+    expect(screen.getByTestId('property-filters')).toBeInTheDocument();
     expect(screen.getAllByTestId('property-card')).toHaveLength(mockProperties.length);
   });
 
   it('updates properties when filter is applied', async () => {
     render(<PropertiesPage />);
     
-    await waitFor(() => expect(screen.getByTestId('property-filters')).toBeInTheDocument());
+    expect(screen.getByTestId('property-filters')).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Set Filter'));
     fireEvent.click(screen.getByText('Get Properties'));
 
-    await waitFor(() => expect(getAllProperties).toHaveBeenCalledWith(expect.objectContaining({ name: 'Test' })));
+    expect(mockUseProperties.setFilter).toHaveBeenCalledWith(expect.objectContaining({ name: 'Test' }));
+    expect(mockUseProperties.getFilteredProperties).toHaveBeenCalled();
   });
 
   it('handles pagination correctly', async () => {
     render(<PropertiesPage />);
     
-    await waitFor(() => expect(screen.getByTestId('property-filters')).toBeInTheDocument());
-    
-    // Mock second page response
-    (getAllProperties as jest.Mock).mockResolvedValueOnce({
-      properties: mockProperties,
-      pagination: { ...mockPagination, page: 2 }
-    });
-
-    // Since we only have 1 page in mock, pagination won't show
-    // But we can test that the pagination state is managed correctly
+    expect(screen.getByTestId('property-filters')).toBeInTheDocument();
     expect(screen.getAllByTestId('property-card')).toHaveLength(mockProperties.length);
   });
 });

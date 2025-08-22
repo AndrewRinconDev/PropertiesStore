@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getAllProperties } from "../../properties/services/property.service";
 import propertyModel, { paginationModel } from "../../properties/models/property.model";
 import { PAGINATION_CONSTANTS, FILTER_CONSTANTS } from "../constants/pagination.constants";
@@ -17,7 +17,7 @@ export const useProperties = () => {
   });
   const [filter, setFilter] = useState<PropertyFilter>(FILTER_CONSTANTS.DEFAULT_FILTER);
 
-  const getFilteredProperties = async (page: number = PAGINATION_CONSTANTS.DEFAULT_PAGE, pageSize: string = filter.pageSize) => {
+  const getFilteredProperties = useCallback(async (page: number = PAGINATION_CONSTANTS.DEFAULT_PAGE, pageSize: string = filter.pageSize) => {
     if (initialLoad) {
       setInitialLoad(false);
     }
@@ -38,10 +38,10 @@ export const useProperties = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // Remove dependencies to prevent infinite loop
 
   const handlePageChange = (page: number) => {
-    getFilteredProperties(page);
+    getFilteredProperties(page, filter.pageSize);
   };
 
   const handlePageSizeChange = (newPageSize: string) => {
@@ -55,7 +55,7 @@ export const useProperties = () => {
 
   useEffect(() => {
     getFilteredProperties(PAGINATION_CONSTANTS.DEFAULT_PAGE);
-  }, []); // Empty dependency array to only run on mount
+  }, [getFilteredProperties]); // Include getFilteredProperties in dependencies
 
   return {
     properties,

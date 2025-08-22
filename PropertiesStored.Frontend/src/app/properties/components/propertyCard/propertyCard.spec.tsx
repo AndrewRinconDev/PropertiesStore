@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import PropertyCard from './propertyCard.component';
-import { propertyDataMock } from './__mock__/propertyDataMock';
+import { propertyDataMock } from '@/app/__mock__/propertyDataMock';
 
 describe('PropertyCard', () => {
   it('should render property data', () => {
@@ -34,12 +34,42 @@ describe('PropertyCard', () => {
     expect(screen.queryByAltText('property-image-1')).not.toBeInTheDocument();
   });
 
-  it('should render View Details button', () => {
+  it('should render View Details button with emoji', () => {
     render(<PropertyCard property={propertyDataMock} />);
 
-    const viewDetailsButton = screen.getByText('View Details');
+    const viewDetailsButton = screen.getByRole('link', { name: /View Details/ });
 
     expect(viewDetailsButton).toBeInTheDocument();
     expect(viewDetailsButton).toHaveAttribute('href', '/properties/1');
+  });
+
+  it('should render price badge overlay', () => {
+    render(<PropertyCard property={propertyDataMock} />);
+
+    const priceBadge = screen.getByText('$1,000,000');
+    expect(priceBadge).toBeInTheDocument();
+    expect(priceBadge).toHaveClass('text-sm', 'font-semibold');
+  });
+
+  it('should render address with location emoji', () => {
+    render(<PropertyCard property={propertyDataMock} />);
+
+    const addressElement = screen.getByText('📍');
+    expect(addressElement).toBeInTheDocument();
+    expect(addressElement).toHaveClass('text-blue-500');
+  });
+
+  it('should have correct card styling classes', () => {
+    const { container } = render(<PropertyCard property={propertyDataMock} />);
+    
+    const cardElement = container.firstChild as HTMLElement;
+    expect(cardElement).toHaveClass('bg-white', 'rounded-xl', 'shadow-lg', 'hover:shadow-2xl', 'transition-all', 'duration-300', 'overflow-hidden', 'border', 'border-gray-100', 'hover:border-blue-200');
+  });
+
+  it('should have correct button styling classes', () => {
+    render(<PropertyCard property={propertyDataMock} />);
+    
+    const button = screen.getByRole('link', { name: /View Details/ });
+    expect(button).toHaveClass('inline-flex', 'items-center', 'justify-center', 'w-full', 'bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'hover:from-blue-700', 'hover:to-blue-800', 'text-white', 'font-semibold', 'py-3', 'px-4', 'rounded-lg', 'transition-all', 'duration-300', 'transform', 'hover:scale-105', 'hover:shadow-lg', 'active:scale-95');
   });
 });

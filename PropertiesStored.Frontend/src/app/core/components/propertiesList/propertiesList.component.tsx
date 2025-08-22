@@ -1,13 +1,12 @@
 import propertyModel from "../../../properties/models/property.model";
 import PropertyCard from "../../../properties/components/propertyCard/propertyCard.component";
-import { LAYOUT_CONSTANTS } from "../../constants/layout.constants";
 
 interface PropertiesListProps {
   properties: propertyModel[];
 }
 
 const PropertiesList: React.FC<PropertiesListProps> = ({ properties }) => (
-  <div className={`grid grid-cols-${LAYOUT_CONSTANTS.GRID.COLUMNS.MOBILE} sm:grid-cols-${LAYOUT_CONSTANTS.GRID.COLUMNS.TABLET} lg:grid-cols-${LAYOUT_CONSTANTS.GRID.COLUMNS.DESKTOP} ${LAYOUT_CONSTANTS.GRID.GAP} ${LAYOUT_CONSTANTS.GRID.JUSTIFY} ${LAYOUT_CONSTANTS.GRID.MARGIN_BOTTOM}`}>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xxl:grid-cols-4 gap-6 justify-items-stretch mb-8">
     {properties.map((property) => (
       <PropertyCard key={property.id} property={property} />
     ))}

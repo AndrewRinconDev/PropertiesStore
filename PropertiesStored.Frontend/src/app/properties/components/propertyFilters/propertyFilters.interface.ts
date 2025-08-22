@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { PropertyFilter } from "../../../core/hooks/useProperties";
+import { PropertyFilter } from "../../../core/types/property.types";
 
 interface IPropertyFiltersProps {
   filter: PropertyFilter;

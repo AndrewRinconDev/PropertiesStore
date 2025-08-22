@@ -1,14 +1,14 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useParams } from 'next/navigation';
 
 import { getPropertyById } from '../services/property.service';
-import propertyModel from '../models/property.model';
 import PropertyDescription from '../components/propertyDescription/propertyDescription.component';
 import ImagesGallery from '../../core/components/imagesGallery/ImagesGallery.component';
 import { getImageData } from '../../core/utilities/getImageData.ts/getImageData';
 
 import PropertyDetailPage from './page';
+import { mockImagesSrc, propertyDataMock } from '@/app/__mock__/propertyDataMock';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -27,37 +27,13 @@ const mockImagesGallery = ImagesGallery as jest.MockedFunction<typeof ImagesGall
 const mockGetImageData = getImageData as jest.MockedFunction<typeof getImageData>;
 
 describe('PropertyDetailPage', () => {
-  const mockProperty: propertyModel = {
-    id: '1',
-    idProperty: 'prop-1',
-    name: 'Test Property',
-    address: '123 Test Street',
-    price: 250000,
-    codeInternal: 'TP001',
-    year: 2020,
-    owner: {
-      idOwner: 'owner-1',
-      name: 'John Doe',
-      address: '456 Owner Street',
-      photo: 'owner-photo.jpg',
-      birthday: '1990-01-01'
-    },
-    images: [
-      { idPropertyImage: 'img-1', file: 'image1.jpg', enabled: true },
-      { idPropertyImage: 'img-2', file: 'image2.jpg', enabled: true }
-    ],
-    traces: [
-      { idPropertyTrace: 'trace-1', dateSale: '2020-01-01', name: 'Sale 1', value: 200000, tax: '5%' }
-    ]
-  };
 
-  const mockImagesSrc = ['image1.jpg', 'image2.jpg'];
 
   beforeEach(() => {
     jest.clearAllMocks();
     
     mockUseParams.mockReturnValue({ propertyId: 'prop-1' });
-    mockGetPropertyById.mockResolvedValue(mockProperty);
+    mockGetPropertyById.mockResolvedValue(propertyDataMock);
     mockGetImageData.mockReturnValue(mockImagesSrc);
     
     mockPropertyDescription.mockImplementation(({ propertyData }) => (
@@ -97,8 +73,8 @@ describe('PropertyDetailPage', () => {
     });
     
     // Check if property description is rendered
-    expect(screen.getByText('Test Property')).toBeInTheDocument();
-    expect(screen.getByText('123 Test Street')).toBeInTheDocument();
+    expect(screen.getAllByText('Test Property')).toHaveLength(2); // One in header, one in description
+    expect(screen.getAllByText('123 Test Street')).toHaveLength(2); // One in header, one in description
     
     // Check if images gallery is rendered
     expect(screen.getByTestId('images-gallery')).toBeInTheDocument();
@@ -123,7 +99,7 @@ describe('PropertyDetailPage', () => {
     render(<PropertyDetailPage />);
     
     await waitFor(() => {
-      expect(mockGetImageData).toHaveBeenCalledWith(mockProperty.images);
+      expect(mockGetImageData).toHaveBeenCalledWith(propertyDataMock.images);
     });
   });
 
@@ -139,7 +115,7 @@ describe('PropertyDetailPage', () => {
     expect(calls.length).toBeGreaterThan(0);
     
     const lastCall = calls[calls.length - 1];
-    expect(lastCall[0]).toEqual({ propertyData: mockProperty });
+    expect(lastCall[0]).toEqual({ propertyData: propertyDataMock });
   });
 
   it('passes correct props to ImagesGallery', async () => {
@@ -156,7 +132,7 @@ describe('PropertyDetailPage', () => {
     const lastCall = calls[calls.length - 1];
     expect(lastCall[0]).toEqual({ 
       imagesSrc: mockImagesSrc, 
-      alt: mockProperty.name 
+      alt: propertyDataMock.name 
     });
   });
 
@@ -166,7 +142,7 @@ describe('PropertyDetailPage', () => {
     // Change propertyId
     mockUseParams.mockReturnValue({ propertyId: 'prop-2' });
     mockGetPropertyById.mockResolvedValueOnce({
-      ...mockProperty,
+      ...propertyDataMock,
       id: '2',
       idProperty: 'prop-2',
       name: 'Test Property 2'
@@ -204,5 +180,17 @@ describe('PropertyDetailPage', () => {
     
     const infoContainer = screen.getByTestId('title-skeleton').closest('.property-info-container');
     expect(infoContainer).toBeInTheDocument();
+  });
+
+  it('should render the back button and call / when click it', () => {
+    render(<PropertyDescription propertyData={mockPropertyDescription} />);
+
+    const backButton = screen.getByText(/Back to Properties/);
+    expect(backButton).toBeInTheDocument();
+    expect(backButton).toHaveAttribute('href', '/');
+
+    fireEvent.click(backButton);
+
+    expect(window.location.pathname).toBe('/');
   });
 });
