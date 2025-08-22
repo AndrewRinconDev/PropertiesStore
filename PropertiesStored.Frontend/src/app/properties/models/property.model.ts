@@ -9,7 +9,7 @@ export interface ownerModel {
 export interface propertyImageModel {
   idPropertyImage: string;
   file: string;
-  enable: boolean;
+  enabled: boolean;
 }
 
 export interface propertyTraceModel {
@@ -21,15 +21,28 @@ export interface propertyTraceModel {
 }
 
 interface propertyModel {
+  id: string;
   idProperty: string;
   name: string;
   address: string;
   price: number;
-  codeInternational: string;
+  codeInternal: string;
   year: number;
   owner: ownerModel;
-  propertyImages: propertyImageModel[];
-  propertyTraces: propertyTraceModel[];
+  images: propertyImageModel[];
+  traces: propertyTraceModel[];
+}
+
+export interface propertyResponseModel {
+  properties: propertyModel[];
+  pagination: paginationModel;
+}
+
+export interface paginationModel {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
 }
 
 export default propertyModel;

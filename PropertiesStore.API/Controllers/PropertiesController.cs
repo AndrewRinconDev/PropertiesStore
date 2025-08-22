@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PropertiesStored.Application.Interfaces;
+using PropertiesStore.Application.Interfaces;
 
 namespace PropertiesStore.API.Controllers
 {
@@ -26,8 +26,8 @@ namespace PropertiesStore.API.Controllers
 
         [HttpGet("filtered")]
         public async Task<IActionResult> GetFilteredProperties(
-            [FromQuery] string name,
-            [FromQuery] string address,
+            [FromQuery] string? name,
+            [FromQuery] string? address,
             [FromQuery] decimal? minPrice,
             [FromQuery] decimal? maxPrice,
             [FromQuery] int page = 1,

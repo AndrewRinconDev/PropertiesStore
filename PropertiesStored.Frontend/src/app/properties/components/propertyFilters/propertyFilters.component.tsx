@@ -1,4 +1,5 @@
 import IPropertyFiltersProps from "./propertyFilters.interface";
+import { FILTER_CONSTANTS } from "../../../core/constants/pagination.constants";
 
 function PropertyFilters({
   filter,
@@ -6,7 +7,7 @@ function PropertyFilters({
   getFilteredProperties,
 }: IPropertyFiltersProps) {
   const clearHandler = () => {
-    setFilter({ name: "", address: "", minPrice: "", maxPrice: "" });
+    setFilter(FILTER_CONSTANTS.DEFAULT_FILTER);
   };
 
   return (

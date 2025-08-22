@@ -1,22 +1,23 @@
 import propertyModel from "@/app/properties/models/property.model";
 
 export const propertyDataMock = {
+  id: '1',
   idProperty: '1',
-  codeInternational: 'US',
+  codeInternal: 'US',
   year: 2021,
   name: 'Beautiful House',
   address: '123 Main St',
   price: 1000000,
-  propertyImages: [{
+  images: [{
     idPropertyImage: 'property-image-1',
     file: '/house.jpg',
-    enable: true,
+    enabled: true,
   }],
   owner: {
     name: 'John Doe',
     photo: '/owner.jpg',
   },
-  propertyTraces: [
+  traces: [
     {
       idPropertyTrace: '1',
       date: '2021-01-01',
@@ -24,3 +25,5 @@ export const propertyDataMock = {
     }
   ]
 } as unknown as propertyModel;
+
+

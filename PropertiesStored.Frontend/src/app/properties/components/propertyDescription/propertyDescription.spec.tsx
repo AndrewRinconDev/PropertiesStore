@@ -8,7 +8,7 @@ describe('PropertyDescription', () => {
   const mockPropertyDescription = {
     name: 'Luxury Villa',
     address: 'Beverly Hills, CA',
-    codeInternational: 'US',
+    codeInternal: 'US',
     year: 2021,
     price: 1000000,
     owner: {

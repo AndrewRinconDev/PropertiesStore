@@ -9,8 +9,8 @@ function PropertyCard({ property }: IPropertyCardProps) {
     <div className="property-card">
       <div className="property-image">
         <Image
-          src={property.propertyImages[0]?.file || "/images/fallback-property-image.jpg"}
-          alt={property.propertyImages[0]?.idPropertyImage || "Property Image"}
+          src={property.images[0]?.file || "/images/fallback-property-image.jpg"}
+          alt={property.images[0]?.idPropertyImage || "Property Image"}
           fill
         />
       </div>
@@ -22,7 +22,7 @@ function PropertyCard({ property }: IPropertyCardProps) {
         </p>
         <Link
           className="property-button"
-          href={`/properties/${property.idProperty}`}
+          href={`/properties/${property.id}`}
         >
           View Details
         </Link>

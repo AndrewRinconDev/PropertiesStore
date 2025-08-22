@@ -24,7 +24,7 @@ describe('PropertyCard', () => {
   it('should render fallback property images', () => {
     const fallbackPropertyDataMock = {
       ...propertyDataMock,
-      propertyImages: []
+      images: []
     };
     render(<PropertyCard property={fallbackPropertyDataMock} />);
 
