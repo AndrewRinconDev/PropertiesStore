@@ -5,6 +5,7 @@ interface IPropertyFiltersProps {
   filter: PropertyFilter;
   setFilter: Dispatch<SetStateAction<PropertyFilter>>;
   applyFilters: () => void;
+  resetFilters: () => void;
 }
 
 export default IPropertyFiltersProps;

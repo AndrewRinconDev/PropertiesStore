@@ -80,8 +80,17 @@ export const useProperties = () => {
   }, [getFilteredProperties]);
 
   const resetFilters = useMemo(() => () => {
-    setFilter(FILTER_CONSTANTS.DEFAULT_FILTER);
-    getFilteredProperties(PAGINATION_CONSTANTS.DEFAULT_PAGE, FILTER_CONSTANTS.DEFAULT_FILTER.pageSize);
+    const defaultFilter = {
+      ...FILTER_CONSTANTS.DEFAULT_FILTER,
+      pageSize: paginationRef.current.pageSize.toString()
+    };
+
+    // Reset both filter and pagination to default values
+    setFilter(defaultFilter);
+    filterRef.current = defaultFilter;
+
+    // Fetch with default values
+    getFilteredProperties(PAGINATION_CONSTANTS.DEFAULT_PAGE, defaultFilter.pageSize);
   }, [getFilteredProperties]);
 
   // Initial load effect

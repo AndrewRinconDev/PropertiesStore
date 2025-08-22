@@ -5,13 +5,8 @@ function PropertyFilters({
   filter,
   setFilter,
   applyFilters,
+  resetFilters,
 }: IPropertyFiltersProps) {
-  const clearHandler = () => {
-    setFilter(FILTER_CONSTANTS.DEFAULT_FILTER);
-    // Apply the cleared filters to refresh the results
-    setTimeout(() => applyFilters(), 0);
-  };
-
   return (
     <div className="w-full lg:w-80 p-6 lg:p-8 bg-white/80 backdrop-blur-sm border-r border-slate-200/50 shadow-lg">
       <div className="space-y-6">
@@ -75,7 +70,7 @@ function PropertyFilters({
             🔍 Search Properties
           </button>
           <button
-            onClick={clearHandler}
+            onClick={resetFilters}
             className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-xl border border-gray-400/20"
           >
             🗑️ Clear Filters

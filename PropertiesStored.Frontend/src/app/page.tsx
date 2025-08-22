@@ -16,6 +16,7 @@ export default function PropertiesPage() {
     handlePageChange,
     handlePageSizeChange,
     applyFilters,
+    resetFilters,
   } = useProperties();
 
   // Show loading overlay only on initial load
@@ -45,6 +46,7 @@ export default function PropertiesPage() {
           filter={filter} 
           setFilter={setFilter} 
           applyFilters={applyFilters}
+          resetFilters={resetFilters}
         />
         <PropertiesContainer
           properties={properties}
