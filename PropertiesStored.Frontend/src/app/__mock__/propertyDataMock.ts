@@ -28,6 +28,34 @@ export const propertyDataMock = {
   ],
 } as unknown as propertyModel;
 
+export const mockPropertyData = {
+  id: "1",
+  idProperty: "1",
+  codeInternal: "US",
+  year: 2021,
+  name: "Test Property",
+  address: "123 Test St",
+  price: 100000,
+  images: [
+    {
+      idPropertyImage: "property-image-1",
+      file: "/test1.jpg",
+      enabled: true,
+    },
+  ],
+  owner: {
+    name: "John Doe",
+    photo: "/owner.jpg",
+  },
+  traces: [
+    {
+      idPropertyTrace: "1",
+      date: "2021-01-01",
+      value: 100000,
+    },
+  ],
+} as unknown as propertyModel;
+
 export const secondPropertyDataMock = {
   id: "2",
   idProperty: "prop2",
@@ -40,10 +68,10 @@ export const secondPropertyDataMock = {
     idOwner: "owner2",
     name: "Test Owner 2",
     address: "Owner Address 2",
-    photo: "owner2.jpg",
+    photo: "/owner2.jpg",
     birthday: "1985-01-01",
   },
-  images: [{ idPropertyImage: "img2", file: "test2.jpg", enabled: true }],
+  images: [{ idPropertyImage: "img2", file: "/test2.jpg", enabled: true }],
   traces: [],
 } as unknown as propertyModel;
 
@@ -73,9 +101,11 @@ export const mockUseProperties = {
     pageSize: '12'
   },
   setFilter: jest.fn(),
+  applyFilters: jest.fn(),
+  resetFilters: jest.fn(),
   getFilteredProperties: jest.fn(),
   handlePageChange: jest.fn(),
   handlePageSizeChange: jest.fn(),
 };
 
-export const mockImagesSrc = ['image1.jpg', 'image2.jpg'];
+export const mockImagesSrc = ['/image1.jpg', '/image2.jpg'];

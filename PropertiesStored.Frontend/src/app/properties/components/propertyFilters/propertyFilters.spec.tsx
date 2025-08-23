@@ -6,7 +6,8 @@ import PropertyFilters from './propertyFilters.component';
 
 describe('PropertyFilters Component', () => {
   const mockSetFilter = jest.fn();
-  const mockGetFilteredProperties = jest.fn();
+  const mockApplyFilters = jest.fn();
+  const mockResetFilters = jest.fn();
 
   const mockFilter = {
     name: '',
@@ -19,18 +20,19 @@ describe('PropertyFilters Component', () => {
 
   beforeEach(() => {
     mockSetFilter.mockClear();
-    mockGetFilteredProperties.mockClear();
+    mockApplyFilters.mockClear();
+    mockResetFilters.mockClear();
   });
 
-  it('calls the filter function when a filter is applied', () => {
-    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+  it('calls the applyFilters function when Search Properties is clicked', () => {
+    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     fireEvent.click(screen.getByText(/Search Properties/));
 
-    expect(mockGetFilteredProperties).toHaveBeenCalled();
+    expect(mockApplyFilters).toHaveBeenCalled();
   });
 
-  it('calls the clear function when the clear button is clicked', () => {
+  it('calls the resetFilters function when the clear button is clicked', () => {
     const mockFilterWithValues = {
       ...mockFilter,
       name: 'Test',
@@ -38,22 +40,15 @@ describe('PropertyFilters Component', () => {
       minPrice: '100',
       maxPrice: '200',
     };
-    render(<PropertyFilters filter={mockFilterWithValues} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+    render(<PropertyFilters filter={mockFilterWithValues} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     fireEvent.click(screen.getByText(/Clear Filters/));
 
-    expect(mockSetFilter).toHaveBeenCalledWith({
-      name: '',
-      address: '',
-      minPrice: '',
-      maxPrice: '',
-      page: '1',
-      pageSize: '10'
-    });
+    expect(mockResetFilters).toHaveBeenCalled();
   });
 
   it('updates the filter when the name input changes', () => {
-    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     fireEvent.change(screen.getByPlaceholderText('Enter property name...'), { target: { value: 'Test' } });
 
@@ -61,7 +56,7 @@ describe('PropertyFilters Component', () => {
   });
 
   it('updates the filter when the address input changes', () => {
-    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     fireEvent.change(screen.getByPlaceholderText('Enter address...'), { target: { value: 'Test' } });
 
@@ -69,7 +64,7 @@ describe('PropertyFilters Component', () => {
   });
 
   it('updates the filter when the min price input changes', () => {
-    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     fireEvent.change(screen.getByPlaceholderText('Min'), { target: { value: '100' } });
 
@@ -77,7 +72,7 @@ describe('PropertyFilters Component', () => {
   });
 
   it('updates the filter when the max price input changes', () => {
-    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     fireEvent.change(screen.getByPlaceholderText('Max'), { target: { value: '200' } });
 
@@ -85,7 +80,7 @@ describe('PropertyFilters Component', () => {
   });
 
   it('renders all filter inputs with correct labels', () => {
-    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     expect(screen.getByText('Property Name')).toBeInTheDocument();
     expect(screen.getByText('Address')).toBeInTheDocument();
@@ -94,13 +89,13 @@ describe('PropertyFilters Component', () => {
   });
 
   it('renders filter description', () => {
-    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     expect(screen.getByText('Refine your property search')).toBeInTheDocument();
   });
 
   it('renders buttons with emojis', () => {
-    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} getFilteredProperties={mockGetFilteredProperties} />);
+    render(<PropertyFilters filter={mockFilter} setFilter={mockSetFilter} applyFilters={mockApplyFilters} resetFilters={mockResetFilters} />);
     
     expect(screen.getByText(/🔍 Search Properties/)).toBeInTheDocument();
     expect(screen.getByText(/🗑️ Clear Filters/)).toBeInTheDocument();

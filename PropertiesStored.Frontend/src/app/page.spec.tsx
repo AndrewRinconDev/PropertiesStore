@@ -20,10 +20,6 @@ jest.mock('./properties/components/propertyCard/propertyCard.component');
 jest.mock('./core/components/loadingOverlay/loadingOverlay.component');
 
 describe('PropertiesPage', () => {
-  
-
-  
-
   beforeEach(() => {
     jest.clearAllMocks();
     
@@ -35,10 +31,10 @@ describe('PropertiesPage', () => {
       properties: mockProperties,
       pagination: mockPagination
     });
-    (PropertyFilters as jest.Mock).mockImplementation(({ filter, setFilter, getFilteredProperties }) => (
+    (PropertyFilters as jest.Mock).mockImplementation(({ filter, setFilter, applyFilters }) => (
       <div data-testid="property-filters">
         <button onClick={() => setFilter({ ...filter, name: 'Test' })}>Set Filter</button>
-        <button onClick={getFilteredProperties}>Get Properties</button>
+        <button onClick={applyFilters}>Get Properties</button>
       </div>
     ));
     (PropertyCard as jest.Mock).mockImplementation(({ property }) => (
@@ -71,7 +67,7 @@ describe('PropertiesPage', () => {
     fireEvent.click(screen.getByText('Get Properties'));
 
     expect(mockUseProperties.setFilter).toHaveBeenCalledWith(expect.objectContaining({ name: 'Test' }));
-    expect(mockUseProperties.getFilteredProperties).toHaveBeenCalled();
+    expect(mockUseProperties.applyFilters).toHaveBeenCalled();
   });
 
   it('handles pagination correctly', async () => {

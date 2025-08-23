@@ -1,14 +1,21 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import PropertyInfoSection from './propertyInfoSection.component';
-import { mockPropertyData } from '../__mocks__/propertyDataMock';
-import { MockPropertyDescription } from '../__mocks__/componentMocks';
 
 // Mock PropertyDescription component
-jest.mock('../propertyDescription/propertyDescription.component', () => ({
-  __esModule: true,
-  default: MockPropertyDescription
-}));
+jest.mock('../propertyDescription/propertyDescription.component', () => {
+  return function MockPropertyDescription({ propertyData }: { propertyData: { name: string; address: string; price: number } }) {
+    return (
+      <div data-testid="property-description">
+        <div data-testid="property-name">{propertyData.name}</div>
+        <div data-testid="property-address">{propertyData.address}</div>
+        <div data-testid="property-price">${propertyData.price}</div>
+      </div>
+    );
+  };
+});
+
+import PropertyInfoSection from './propertyInfoSection.component';
+import { mockPropertyData } from '../__mocks__/propertyDataMock';
 
 describe('PropertyInfoSection', () => {
   it('renders with correct order class', () => {

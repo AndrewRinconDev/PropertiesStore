@@ -1,5 +1,4 @@
 import IPropertyFiltersProps from "./propertyFilters.interface";
-import { FILTER_CONSTANTS } from "../../../core/constants/pagination.constants";
 
 function PropertyFilters({
   filter,

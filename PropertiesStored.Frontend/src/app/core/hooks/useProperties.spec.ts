@@ -23,7 +23,7 @@ const mockProperties = [
       photo: 'owner1.jpg',
       birthday: '1980-01-01'
     },
-    images: [{ idPropertyImage: 'img1', file: 'test1.jpg', enabled: true }],
+    images: [{ idPropertyImage: 'img1', file: '/test1.jpg', enabled: true }],
     traces: []
   },
   {
@@ -41,7 +41,7 @@ const mockProperties = [
       photo: 'owner2.jpg',
       birthday: '1985-01-01'
     },
-    images: [{ idPropertyImage: 'img2', file: 'test2.jpg', enabled: true }],
+    images: [{ idPropertyImage: 'img2', file: '/test2.jpg', enabled: true }],
     traces: []
   }
 ];
@@ -66,8 +66,8 @@ describe('useProperties', () => {
     const { result } = renderHook(() => useProperties());
 
     expect(result.current.properties).toEqual([]);
-    expect(result.current.loading).toBe(false);
-    expect(result.current.initialLoad).toBe(true);
+    expect(result.current.loading).toBe(true); // Loading starts as true because useEffect runs immediately
+    expect(result.current.initialLoad).toBe(false); // initialLoad becomes false after first useEffect
     expect(result.current.pagination).toEqual({
       page: 1,
       pageSize: 10,
