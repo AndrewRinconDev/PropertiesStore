@@ -1,9 +1,6 @@
 import PropertiesSkeleton from "../propertiesSkeleton/propertiesSkeleton.component";
 import PropertiesList from "../propertiesList/propertiesList.component";
 import Pagination from "../pagination/pagination.component";
-import propertyModel from "../../../properties/models/property.model";
-import { paginationModel } from "../../../properties/models/property.model";
-import { PropertyFilter } from "../../types/property.types";
 
 import { PropertyListProps } from "../../types/property.types";
 

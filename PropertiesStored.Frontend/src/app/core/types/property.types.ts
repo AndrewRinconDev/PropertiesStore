@@ -1,4 +1,4 @@
-export interface PropertyFilter {
+export interface PropertyFilter extends Record<string, string> {
   name: string;
   address: string;
   minPrice: string;

@@ -18,7 +18,7 @@ const useApi = <T>(url: string, options?: RequestInit): ApiResponse<T> => {
       .then((result) => setData(result))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [url, options]);
 
   return { data, error, loading };
 };

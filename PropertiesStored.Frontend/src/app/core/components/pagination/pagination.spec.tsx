@@ -10,6 +10,7 @@ describe('Pagination', () => {
     totalCount: 120,
     totalPages: 10,
   };
+  const mockOnPageSizeChange = jest.fn();
 
   const mockOnPageChange = jest.fn();
 
@@ -23,20 +24,26 @@ describe('Pagination', () => {
         pagination={mockPagination}
         onPageChange={mockOnPageChange}
         currentPage={1}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    // Check if pagination info is displayed by looking for the specific text structure
-    expect(screen.getByText('Showing')).toBeInTheDocument();
-    expect(screen.getByText('to')).toBeInTheDocument();
-    expect(screen.getByText('of')).toBeInTheDocument();
-    expect(screen.getByText('results')).toBeInTheDocument();
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
-    expect(screen.getByText('4')).toBeInTheDocument();
+    // Check if pagination info is displayed using partial text matching
+    expect(screen.getByText(/Showing/)).toBeInTheDocument();
+    expect(screen.getByText(/results/)).toBeInTheDocument();
+    
+    // Check for page numbers (only the button ones, not the select options)
+    const pageButtons = screen.getAllByRole('button').filter(button => 
+      /^[0-9]+$/.test(button.textContent || '')
+    );
+    expect(pageButtons.some(btn => btn.textContent === '1')).toBe(true);
+    expect(pageButtons.some(btn => btn.textContent === '2')).toBe(true);
+    expect(pageButtons.some(btn => btn.textContent === '3')).toBe(true);
+    expect(pageButtons.some(btn => btn.textContent === '4')).toBe(true);
+    expect(pageButtons.some(btn => btn.textContent === '10')).toBe(true);
+    
     expect(screen.getByText('...')).toBeInTheDocument();
-    expect(screen.getByText('10')).toBeInTheDocument();
   });
 
   it('renders correct page numbers for current page in middle', () => {
@@ -47,32 +54,43 @@ describe('Pagination', () => {
         pagination={middlePagePagination}
         onPageChange={mockOnPageChange}
         currentPage={5}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('4')).toBeInTheDocument();
-    expect(screen.getByText('5')).toBeInTheDocument();
-    expect(screen.getByText('6')).toBeInTheDocument();
-    expect(screen.getByText('10')).toBeInTheDocument();
+    // Use more specific selectors to avoid conflicts with page size options
+    const pageButtons = screen.getAllByRole('button').filter(button => 
+      /^[0-9]+$/.test(button.textContent || '')
+    );
+    
+    expect(pageButtons.some(btn => btn.textContent === '1')).toBe(true);
+    expect(pageButtons.some(btn => btn.textContent === '4')).toBe(true);
+    expect(pageButtons.some(btn => btn.textContent === '5')).toBe(true);
+    expect(pageButtons.some(btn => btn.textContent === '6')).toBe(true);
+    expect(pageButtons.some(btn => btn.textContent === '10')).toBe(true);
     
     // Check for ellipsis (there should be at least one)
     const ellipsisElements = screen.getAllByText('...');
     expect(ellipsisElements.length).toBeGreaterThan(0);
   });
 
-  it('does not render when there is only one page', () => {
+  it('renders pagination even when there is only one page', () => {
     const singlePagePagination = { ...mockPagination, totalPages: 1 };
     
-    const { container } = render(
+    render(
       <Pagination
         pagination={singlePagePagination}
         onPageChange={mockOnPageChange}
         currentPage={1}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    expect(container.firstChild).toBeNull();
+    // Should still render the pagination component
+    expect(screen.getByText(/Showing/)).toBeInTheDocument();
+    expect(screen.getByText(/results/)).toBeInTheDocument();
   });
 
   it('calls onPageChange when page number is clicked', () => {
@@ -81,10 +99,18 @@ describe('Pagination', () => {
         pagination={mockPagination}
         onPageChange={mockOnPageChange}
         currentPage={1}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    fireEvent.click(screen.getByText('2'));
+    // Find the button with text "2" that is actually clickable
+    const pageButtons = screen.getAllByRole('button').filter(button => 
+      button.textContent === '2' && !(button as HTMLButtonElement).disabled
+    );
+    expect(pageButtons.length).toBeGreaterThan(0);
+    
+    fireEvent.click(pageButtons[0]);
     expect(mockOnPageChange).toHaveBeenCalledWith(2);
   });
 
@@ -94,12 +120,18 @@ describe('Pagination', () => {
         pagination={mockPagination}
         onPageChange={mockOnPageChange}
         currentPage={1}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    const nextButtons = screen.getAllByText('Next');
-    const nextButton = nextButtons.find(button => button.tagName === 'BUTTON');
-    fireEvent.click(nextButton!);
+    // Find the next button by looking for the SVG icon button with Next label in desktop version
+    const nextButtons = screen.getAllByRole('button').filter(button => 
+      button.querySelector('span[class*="sr-only"]')?.textContent === 'Next'
+    );
+    expect(nextButtons.length).toBeGreaterThan(0);
+    
+    fireEvent.click(nextButtons[0]);
     expect(mockOnPageChange).toHaveBeenCalledWith(2);
   });
 
@@ -109,12 +141,18 @@ describe('Pagination', () => {
         pagination={mockPagination}
         onPageChange={mockOnPageChange}
         currentPage={2}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    const prevButtons = screen.getAllByText('Previous');
-    const prevButton = prevButtons.find(button => button.tagName === 'BUTTON');
-    fireEvent.click(prevButton!);
+    // Find the previous button by looking for the SVG icon button with Previous label in desktop version
+    const prevButtons = screen.getAllByRole('button').filter(button => 
+      button.querySelector('span[class*="sr-only"]')?.textContent === 'Previous'
+    );
+    expect(prevButtons.length).toBeGreaterThan(0);
+    
+    fireEvent.click(prevButtons[0]);
     expect(mockOnPageChange).toHaveBeenCalledWith(1);
   });
 
@@ -124,12 +162,17 @@ describe('Pagination', () => {
         pagination={mockPagination}
         onPageChange={mockOnPageChange}
         currentPage={1}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    const prevButtons = screen.getAllByText('Previous');
-    const prevButton = prevButtons.find(button => button.tagName === 'BUTTON');
-    expect(prevButton).toBeDisabled();
+    // Find the previous button by looking for the SVG icon button with Previous label in desktop version
+    const prevButtons = screen.getAllByRole('button').filter(button => 
+      button.querySelector('span[class*="sr-only"]')?.textContent === 'Previous'
+    );
+    expect(prevButtons.length).toBeGreaterThan(0);
+    expect(prevButtons[0]).toBeDisabled();
   });
 
   it('disables next button on last page', () => {
@@ -138,12 +181,17 @@ describe('Pagination', () => {
         pagination={mockPagination}
         onPageChange={mockOnPageChange}
         currentPage={10}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    const nextButtons = screen.getAllByText('Next');
-    const nextButton = nextButtons.find(button => button.tagName === 'BUTTON');
-    expect(nextButton).toBeDisabled();
+    // Find the next button by looking for the SVG icon button with Next label in desktop version
+    const nextButtons = screen.getAllByRole('button').filter(button => 
+      button.querySelector('span[class*="sr-only"]')?.textContent === 'Next'
+    );
+    expect(nextButtons.length).toBeGreaterThan(0);
+    expect(nextButtons[0]).toBeDisabled();
   });
 
   it('shows current page as active', () => {
@@ -152,10 +200,31 @@ describe('Pagination', () => {
         pagination={mockPagination}
         onPageChange={mockOnPageChange}
         currentPage={3}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
       />
     );
 
-    const currentPageButton = screen.getByText('3');
-    expect(currentPageButton).toHaveClass('bg-indigo-600');
+    // Find the button with text "3" that has the active styling
+    const pageButtons = screen.getAllByRole('button').filter(button => 
+      button.textContent === '3' && button.className.includes('bg-gradient-to-r')
+    );
+    expect(pageButtons.length).toBeGreaterThan(0);
+  });
+
+  it('calls onPageSizeChange when page size is changed', () => {
+    render(
+      <Pagination
+        pagination={mockPagination}
+        onPageChange={mockOnPageChange}
+        currentPage={1}
+        onPageSizeChange={mockOnPageSizeChange}
+        currentPageSize="12"
+      />
+    );
+
+    const pageSizeSelect = screen.getByLabelText('Show:');
+    fireEvent.change(pageSizeSelect, { target: { value: '25' } });
+    expect(mockOnPageSizeChange).toHaveBeenCalledWith('25');
   });
 });

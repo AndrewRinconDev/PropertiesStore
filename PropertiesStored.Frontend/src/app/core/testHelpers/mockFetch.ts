@@ -9,8 +9,6 @@ export function mockFetch(data: unknown) {
 
 export function mockFetchError() {
   return jest.fn().mockImplementation(() =>
-    Promise.resolve({
-      ok: false,
-    }),
+    Promise.reject(new Error('Network response was not ok')),
   );
 }
